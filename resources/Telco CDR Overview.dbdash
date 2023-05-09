@@ -1,0 +1,1595 @@
+{
+  "queries": [
+    {
+      "id": "72a6d967-8ad6-47b5-8a94-25a0dc674dce",
+      "name": "map_drop_rates",
+      "description": null,
+      "query": "\n    select\n      sum(call),\n      sum(dropped),\n      (sum(dropped) / sum(call) * 100) as dropped_rate,\n      case\n        when (sum(dropped) / sum(call) * 100) > 2 then TRUE\n        else FALSE\n      end as high_drop_rate,\n      towerId,\n      first(Longitude) as Longitude,\n      first(Latitude) as Latitude\n    from\n      geospatial_tomasz.telco_cdr_gold_hist_daily\n    group by\n      towerId\n",
+      "options": {
+        "apply_auto_limit": false,
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "3206557a-dc48-4dea-aa0f-0d8cc6c5b04a",
+          "type": "MAP",
+          "name": "Map (Markers) 1",
+          "description": "",
+          "options": {
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            }
+          },
+          "query_plan": null
+        },
+        {
+          "id": "d0d01c6f-46a2-4d4e-803f-84188f6d9b75",
+          "type": "COUNTER",
+          "name": "Counter 1",
+          "description": "",
+          "options": {
+            "counterLabel": "Subscribers affected by current outages",
+            "counterColName": "subscribers_affected",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000"
+          },
+          "query_plan": null
+        },
+        {
+          "id": "f8d42c75-3c16-4286-a817-b77bd4bded77",
+          "type": "MAP",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "latColName": "Latitude",
+            "lonColName": "Longitude",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 41.14142317933322,
+                "lng": -110.67033727189076
+              },
+              "_northEast": {
+                "lat": 43.96908877243241,
+                "lng": -104.66630895157826
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true,
+            "condensed": true,
+            "withRowNumber": true
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "eec33b5a-20ae-473b-9142-670081cb339e",
+      "name": "Calls by Day (This Year)",
+      "description": null,
+      "query": "select   \n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate,\n  date\n  from\n  geospatial_tomasz.telco_cdr_gold_hist_daily\n  where date > \"2022-01-01\"\n  group by date\n  order by date asc",
+      "options": {
+        "apply_auto_limit": true,
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "a29d9520-aef2-40f1-b677-9c3adc3bb9d7",
+          "type": "CHART",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "version": 2,
+            "globalSeriesType": "line",
+            "sortX": true,
+            "sortY": true,
+            "legend": {
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              }
+            },
+            "yAxis": [
+              {
+                "type": "-"
+              },
+              {
+                "type": "-",
+                "opposite": true
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {
+              "column_c0fd9e349175": {
+                "yAxis": 0,
+                "type": "line",
+                "name": "Total Calls",
+                "zIndex": 0
+              },
+              "column_c0fd9e349274": {
+                "yAxis": 0,
+                "type": "line",
+                "zIndex": 1,
+                "name": "Total Dropped"
+              },
+              "column_c0fd9e349276": {
+                "yAxis": 1,
+                "type": "line",
+                "zIndex": 2,
+                "name": "Dropped Rate"
+              }
+            },
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "useAggregationsUi": true,
+            "swappedAxes": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "showDataLabels": false,
+            "columnConfigurationMap": {
+              "x": {
+                "column": "date",
+                "transform": "DAY_LEVEL",
+                "id": "column_8628fad23223"
+              },
+              "y": [
+                {
+                  "id": "column_c0fd9e349175",
+                  "column": "sum(call)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349274",
+                  "column": "sum(dropped)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349276",
+                  "column": "dropped_rate",
+                  "transform": "SUM"
+                }
+              ]
+            },
+            "isAggregationOn": true,
+            "hideYAxes": false
+          },
+          "query_plan": {
+            "selects": [
+              {
+                "function": "DATE_TRUNC",
+                "args": [
+                  {
+                    "column": "date"
+                  },
+                  {
+                    "string": "DAY"
+                  }
+                ],
+                "alias": "column_8628fad23223"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(call)"
+                  }
+                ],
+                "alias": "column_c0fd9e349175"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(dropped)"
+                  }
+                ],
+                "alias": "column_c0fd9e349274"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "dropped_rate"
+                  }
+                ],
+                "alias": "column_c0fd9e349276"
+              }
+            ],
+            "groups": [
+              {
+                "column": "column_8628fad23223"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "3d55cd95-003d-44e7-92b0-0afbf598382b",
+      "name": "Details by Tower",
+      "description": null,
+      "query": "select\n  sum(call) as Total_Calls,\n  sum(dropped) as Total_Dropped,\n  (sum(dropped)/sum(call))*100 as Drop_Rate,\n  towerId,\n  first(properties[\"LocCity\"]) as City,\n  first(properties[\"LocCounty\"]) as County,\n  first(properties[\"LocState\"]) as State\nfrom\n  geospatial_tomasz.telco_cdr_gold_hist_daily\ngroup by towerId",
+      "options": {
+        "apply_auto_limit": false,
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "7915cc03-6e35-40a8-84ca-758b6bc7b81e",
+          "type": "TABLE",
+          "name": "Table 1",
+          "description": "",
+          "options": {
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "high_drop_rate",
+                "type": "boolean",
+                "displayAs": "boolean",
+                "visible": true,
+                "order": 100003,
+                "title": "high_drop_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "towerId",
+                "type": "string",
+                "displayAs": "string",
+                "visible": true,
+                "order": 100004,
+                "title": "towerId",
+                "allowSearch": false,
+                "alignContent": "left",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "long",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100005,
+                "title": "long",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "lat",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100006,
+                "title": "lat",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            }
+          },
+          "query_plan": null
+        },
+        {
+          "id": "9f1c2b98-b6a4-4f72-a1dd-9473baed1abd",
+          "type": "MAP",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "6ceff0ac-6f11-4878-aa41-13fe2ed863de",
+      "name": "Sum Calls",
+      "description": null,
+      "query": "select\n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate\nfrom\n  geospatial_tomasz.telco_cdr_gold_hist_daily",
+      "options": {
+        "apply_auto_limit": true,
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "395f5666-7dc8-4901-96ec-8ba62484de29",
+          "type": "COUNTER",
+          "name": "Counter 2",
+          "description": "",
+          "options": {
+            "counterLabel": "",
+            "counterColName": "sum(totalRecords)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": -3,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "stringSuffix": "",
+            "countRow": false
+          },
+          "query_plan": null
+        },
+        {
+          "id": "98fb0a15-40c2-41f2-b8ab-f9de56670eeb",
+          "type": "COUNTER",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "counterLabel": "Total Calls",
+            "counterColName": "sum(call)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "548d45be-287c-44f9-a88d-992d0921c3bf",
+      "name": "Calls by Month",
+      "description": null,
+      "query": "select   \n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate,\n  month\n  from\n  geospatial_tomasz.telco_cdr_gold_hist_monthly\n  group by month\n  order by month asc",
+      "options": {
+        "apply_auto_limit": true,
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "9a7ba42e-9c5c-4333-82a7-3aa12d4ae55e",
+          "type": "CHART",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "version": 2,
+            "globalSeriesType": "line",
+            "sortX": true,
+            "sortY": true,
+            "legend": {
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              }
+            },
+            "yAxis": [
+              {
+                "type": "-"
+              },
+              {
+                "type": "-",
+                "opposite": true
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {
+              "column_c0fd9e349175": {
+                "yAxis": 0,
+                "type": "line",
+                "name": "Total Calls",
+                "zIndex": 0
+              },
+              "column_c0fd9e349274": {
+                "yAxis": 0,
+                "type": "line",
+                "zIndex": 1,
+                "name": "Total Dropped"
+              },
+              "column_c0fd9e349276": {
+                "yAxis": 1,
+                "type": "line",
+                "zIndex": 2,
+                "name": "Dropped Rate"
+              }
+            },
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "useAggregationsUi": true,
+            "swappedAxes": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "showDataLabels": false,
+            "columnConfigurationMap": {
+              "x": {
+                "column": "month",
+                "transform": "MONTH_LEVEL",
+                "id": "column_c0fd9e349173"
+              },
+              "y": [
+                {
+                  "id": "column_c0fd9e349175",
+                  "column": "sum(call)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349274",
+                  "column": "sum(dropped)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349276",
+                  "column": "dropped_rate",
+                  "transform": "SUM"
+                }
+              ]
+            },
+            "isAggregationOn": true,
+            "hideYAxes": false
+          },
+          "query_plan": {
+            "selects": [
+              {
+                "function": "DATE_TRUNC",
+                "args": [
+                  {
+                    "column": "month"
+                  },
+                  {
+                    "string": "MONTH"
+                  }
+                ],
+                "alias": "column_c0fd9e349173"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(call)"
+                  }
+                ],
+                "alias": "column_c0fd9e349175"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(dropped)"
+                  }
+                ],
+                "alias": "column_c0fd9e349274"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "dropped_rate"
+                  }
+                ],
+                "alias": "column_c0fd9e349276"
+              }
+            ],
+            "groups": [
+              {
+                "column": "column_c0fd9e349173"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "280574c6-5626-45eb-8211-35499f99f568",
+      "name": "Dropped Rate",
+      "description": null,
+      "query": "select\n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate\nfrom\n  geospatial_tomasz.telco_cdr_gold_hist_daily",
+      "options": {
+        "apply_auto_limit": true,
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "3f015ce9-90d6-4911-a09b-a6f1bc019aca",
+          "type": "COUNTER",
+          "name": "Counter 2",
+          "description": "",
+          "options": {
+            "counterLabel": "",
+            "counterColName": "sum(totalRecords)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": -3,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "stringSuffix": "",
+            "countRow": false
+          },
+          "query_plan": null
+        },
+        {
+          "id": "61e8dcc0-6a53-4f79-b061-034fbebf8d0b",
+          "type": "COUNTER",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "counterLabel": "Dropped Rate",
+            "counterColName": "dropped_rate",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 3,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true,
+            "stringSuffix": "%"
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "1c3ccbe2-b6aa-42a6-bde2-bc4f69e83b23",
+      "name": "subscribers_affected",
+      "description": null,
+      "query": "select\n  sum(unique_subscribers) as subscribers_affected\nfrom\n  (\n    select\n      sum(call),\n      sum(dropped),\n      (sum(dropped) / sum(call) * 100) as dropped_rate,\n      case\n        when (sum(dropped) / sum(call) * 100) > 2 then TRUE\n        else FALSE\n      end as high_drop_rate,\n      towerId\n    from\n      geospatial_tomasz.telco_cdr_gold_hist_daily\n    group by\n      towerId\n  ) as table_dropped_calls\n  join (\n    select\n      count(subscriberId) + count(id_other) as unique_subscribers,\n      towerId\n    from\n      geospatial_tomasz.telco_cdr_hist\n    group by\n      towerId\n  ) as table_subscribers on table_dropped_calls.towerId = table_subscribers.towerId \nwhere\n  table_dropped_calls.high_drop_rate = TRUE",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": false,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2674171610689363",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "0e550d91-68e4-479b-8709-aaa077a978d8",
+          "type": "MAP",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true
+          },
+          "query_plan": null
+        },
+        {
+          "id": "e7eb3cd8-aa5f-4758-8b78-74ce566b925a",
+          "type": "COUNTER",
+          "name": "Counter 1",
+          "description": "",
+          "options": {
+            "counterLabel": "Subscribers affected by current outages",
+            "counterColName": "subscribers_affected",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000"
+          },
+          "query_plan": null
+        },
+        {
+          "id": "fbac21b5-d1b2-447d-bb94-bcd81a42376d",
+          "type": "MAP",
+          "name": "Map (Markers) 1",
+          "description": "",
+          "options": {
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            }
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "45fe3a8a-f8ad-47b2-b99e-375a08d9be8a",
+      "name": "Sum Dropped",
+      "description": null,
+      "query": "select\n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate\nfrom\n  geospatial_tomasz.telco_cdr_gold_hist_daily",
+      "options": {
+        "apply_auto_limit": true,
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "25f36317-d6ee-465f-9e05-b4fcd92ed86a",
+          "type": "COUNTER",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "counterLabel": "Total Dropped Calls",
+            "counterColName": "sum(dropped)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true
+          },
+          "query_plan": null
+        },
+        {
+          "id": "9b4d2e7e-59d3-44de-83da-465f29043f01",
+          "type": "COUNTER",
+          "name": "Counter 2",
+          "description": "",
+          "options": {
+            "counterLabel": "",
+            "counterColName": "sum(totalRecords)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": -3,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "stringSuffix": "",
+            "countRow": false
+          },
+          "query_plan": null
+        }
+      ]
+    }
+  ],
+  "dashboard": {
+    "id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+    "name": "Telco CDR Overview",
+    "widgets": [
+      {
+        "id": "f8839854-7bbc-465b-b4e0-4006568ba487",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 6,
+            "sizeY": 13,
+            "minSizeX": 2,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 13
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "f8d42c75-3c16-4286-a817-b77bd4bded77"
+      },
+      {
+        "id": "c931e6e2-ec84-41ce-b828-c1abdf5c736f",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 5,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 4,
+            "row": 0
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "61e8dcc0-6a53-4f79-b061-034fbebf8d0b"
+      },
+      {
+        "id": "02feedae-2752-4e15-b642-e6e45bc6137b",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 5,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 2,
+            "row": 0
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "25f36317-d6ee-465f-9e05-b4fcd92ed86a"
+      },
+      {
+        "id": "abe490c4-5d90-41bf-b7d1-6dc9e3f7a66c",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 5,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 0
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "98fb0a15-40c2-41f2-b8ab-f9de56670eeb"
+      },
+      {
+        "id": "0559f0d9-fbbc-42e7-a191-1b101db8e96e",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 3,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 5
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "9a7ba42e-9c5c-4333-82a7-3aa12d4ae55e"
+      },
+      {
+        "id": "b5457a56-dd01-473d-aa70-80063a00dbfd",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 3,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 3,
+            "row": 5
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "a29d9520-aef2-40f1-b677-9c3adc3bb9d7"
+      },
+      {
+        "id": "6bdd6385-8272-4244-8e26-80d35726723d",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 6,
+            "sizeY": 12,
+            "minSizeX": 2,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 30
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "7915cc03-6e35-40a8-84ca-758b6bc7b81e"
+      },
+      {
+        "id": "bda90b6e-6b0b-461d-b2c1-c16c81a6b1ae",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 6,
+            "sizeY": 4,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 26
+          }
+        },
+        "dashboard_id": "b9a70988-9ed2-4fc0-b4f0-02a485b8e364",
+        "text": "",
+        "visualization_id": "e7eb3cd8-aa5f-4758-8b78-74ce566b925a"
+      }
+    ],
+    "tags": [],
+    "color_palette": null,
+    "dashboard_filters_enabled": false,
+    "warehouse_id": "ead10bf07050390f",
+    "is_archived": false
+  },
+  "version": "1.0"
+}
