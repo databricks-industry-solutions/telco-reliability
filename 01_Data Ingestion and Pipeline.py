@@ -31,6 +31,11 @@ dbutils.widgets.dropdown("reset_all_data", "false", ["true", "false"], "Reset al
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC select count(*) from json.`/Users/tomasz.bacewicz@databricks.com/field_demos/telco/CDR`
+
+# COMMAND ----------
+
 # MAGIC %run ./_resources/00-setup $reset_all_data=$reset_all_data
 
 # COMMAND ----------
@@ -221,7 +226,7 @@ def cdr_stream_minute_gold():
 import pyspark.sql.functions as F
 
 @dlt.table(comment="Aggregate PCMD Stream - Gold (by Minute)")
-def PCMD_stream_minute_gold():
+def pcmd_stream_minute_gold():
   df_pcmd_silver = dlt.read_stream("pcmd_stream_silver")
   
   #clean up the code
@@ -267,6 +272,57 @@ def PCMD_stream_minute_gold():
                                                                                       ))
   
   return df_pcmd_pivot_on_status_grouped_tower_ordered
+
+# COMMAND ----------
+
+import pyspark.sql.functions as F
+
+@dlt.table(comment="Aggregate CDR Stream - Gold (by Hour)")
+def cdr_stream_hour_gold():
+  df_cdr_minute_gold = dlt.read_stream("cdr_stream_minute_gold")
+
+  df_windowed_by_hour = (df_cdr_minute_gold
+                          .groupBy(F.window("date", "1 hour"), "towerId")
+                          .agg(F.sum(F.col("dropped")).alias("dropped"),   
+                          F.sum(F.col("answered")).alias("answered"), 
+                          F.sum(F.col("missed")).alias("missed"),
+                          F.sum(F.col("text")).alias("text"),
+                          F.sum(F.col("call")).alias("call"),
+                          F.sum(F.col("totalRecords_CDR")).alias("totalRecords_CDR"),
+                          F.first("City").alias("City"),
+                          F.first("County").alias("County"),
+                          F.first("State").alias("State"),
+                          F.first("Latitude").alias("Latitude"),
+                          F.first("Longitude").alias("Longitude"),                            
+                          F.first("window.start").alias("window_start")))
+
+  return df_windowed_by_hour
+
+
+# COMMAND ----------
+
+import pyspark.sql.functions as F
+
+@dlt.table(comment="Aggregate CDR Stream - Gold (by Day)")
+def cdr_stream_day_gold():
+  df_cdr_minute_gold = dlt.read_stream("cdr_stream_minute_gold")
+
+  df_windowed_by_day = (df_cdr_minute_gold
+                          .groupBy(F.window("date", "1 day"), "towerId")
+                          .agg(F.sum(F.col("dropped")).alias("dropped"),   
+                          F.sum(F.col("answered")).alias("answered"), 
+                          F.sum(F.col("missed")).alias("missed"),
+                          F.sum(F.col("text")).alias("text"),
+                          F.sum(F.col("call")).alias("call"),
+                          F.sum(F.col("totalRecords_CDR")).alias("totalRecords_CDR"),
+                          F.first("City").alias("City"),
+                          F.first("County").alias("County"),
+                          F.first("State").alias("State"),
+                          F.first("Latitude").alias("Latitude"),
+                          F.first("Longitude").alias("Longitude"),                            
+                          F.first("window.start").alias("window_start")))
+
+  return df_windowed_by_day
 
 # COMMAND ----------
 
