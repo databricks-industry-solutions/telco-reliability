@@ -13,12 +13,20 @@
 
 # COMMAND ----------
 
-# MAGIC %run ./_resources/00-setup $reset_all_data=false
+# MAGIC %run ./_resources/00-setup
 
 # COMMAND ----------
 
-#querying a few towers to explore forecating
-towerIds = spark.sql("select towerId from CDR_day_gold_ml group by towerId")
+#querying a few towers to explore forecasting
+towerIds_list = [('{B8F4712B-F69B-40B2-BB38-0D6974424723}',), 
+            ('{FA3B325C-25E1-42A5-8409-150E46FF3DF1}',), 
+            ('{8C6DB461-40EB-4811-9151-C4118189BB0E}',), 
+            ('{C128458D-A8A7-4C3B-A22A-6685F4DABA17}',),
+            ('{8C3D0E39-4470-4E0B-97FB-EA351DC4FD71}',),
+            ('{2630449E-8710-4134-B1C6-327EAE1978AB}',)]
+
+towerIds_cols = ["towerId"]
+towerIds = spark.createDataFrame(data=towerIds_list, schema = towerIds_cols)
 
 # COMMAND ----------
 
@@ -30,14 +38,12 @@ def fitForecastDaily(towerId_row):
   model = Prophet(
     interval_width=.95,
     growth="linear",
-    daily_seasonality=True,
     weekly_seasonality=True,
     yearly_seasonality=False
   )
 
   #querying from the daily gold table to get total amount of activity by tower and date
-  df = spark.sql("select CAST(datetime as date) as ds, sum(totalRecords_CDR) as y from CDR_day_gold_ml where year(datetime) = 2021 and towerId = '{}' group by ds".format(towerId))
-  
+  df = spark.sql("select CAST(datetime as date) as ds, sum(totalRecords_CDR) as y from cdr_stream_day_gold where year(datetime) = 2023 and towerId = '{}' group by ds".format(towerId))
   #do the actual fit in Pandas
   pandas_df = df.toPandas()
   model.fit(pandas_df)
@@ -72,7 +78,7 @@ for index, row in towerIds.toPandas().iterrows():
 
 # MAGIC %md 
 # MAGIC ## Forecasting by Day
-# MAGIC We can plot the results of a forecasting model using all of 2021 data for a tower. With Prophet we can easily find the drivers that affect the prediction the most. For example with the first tower we can find that most of the activity seems to happn on the weekend (Saturday and Sunday) while the second tower that is plotted has more activity on the weekday (Monday-Friday).
+# MAGIC We can plot the results of a forecasting model using all of 2021 data for a tower. With Prophet we can easily find the drivers that affect the prediction the most. For example with the first tower we can find that most of the activity seems to happen on the weekend (Saturday and Sunday) while the second tower that is plotted has more activity on the weekday (Monday-Friday).
 # MAGIC
 # MAGIC ### Weekend Tower
 # MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/weekend_component.png"/>
@@ -82,22 +88,17 @@ for index, row in towerIds.toPandas().iterrows():
 
 # COMMAND ----------
 
-plotModelDaily(modelsByTowerDaily[0])
+plotModelDaily(modelsByTowerDaily[3])
 
 # COMMAND ----------
 
-plotModelDaily(modelsByTowerDaily[1])
+plotModelDaily(modelsByTowerDaily[4])
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ## Forecasting on an hourly basis
 # MAGIC As we see that most of the forecasting signal occurs on a more granular level (by weekday) we can also attempt to forecast on an hourly basis instead. In the graph below we see that in a weeks time some towers have more activity on the weekends while others are more active on the weekday. Within each day there are varying amounts of activity by the time of day (in hours). 
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select concat(dayofweek(datetime), "-", hour(datetime)) as day_hour, first(datetime) as datetime_, towerId, sum(totalRecords_CDR) from CDR_hour_gold_ml where datetime >= "2021-07-11" and datetime < "2021-07-18" group by day_hour, towerId order by dayofweek(datetime_) asc, hour(datetime_) asc
 
 # COMMAND ----------
 
@@ -114,7 +115,7 @@ def fitForecastHourly(towerId_row):
   )
   
   #take a segment of two weeks with hour granularity
-  df = spark.sql("select datetime as ds, totalRecords_CDR as y from CDR_hour_gold_ml where datetime >= '2021-06-27' and datetime < '2021-07-18' and towerId = '{}'".format(towerId))
+  df = spark.sql("select datetime as ds, totalRecords_CDR as y from cdr_stream_hour_gold where datetime >= '2023-05-01' and datetime < '2023-05-15' and towerId = '{}'".format(towerId))
   pandas_df = df.toPandas()
 
   model.fit(pandas_df)
@@ -137,7 +138,6 @@ def plotModelHourly(model, periods=168, freq='H', include_history=True):
 modelsByTowerHourly = []
 
 for index, row in towerIds.toPandas().iterrows():
-  print(row)
   modelsByTowerHourly.append(fitForecastHourly(row))
 
 # COMMAND ----------
@@ -151,11 +151,11 @@ for index, row in towerIds.toPandas().iterrows():
 
 # COMMAND ----------
 
-plotModelHourly(modelsByTowerHourly[0])
+plotModelHourly(modelsByTowerHourly[3])
 
 # COMMAND ----------
 
-plotModelHourly(modelsByTowerHourly[3])
+plotModelHourly(modelsByTowerHourly[4])
 
 # COMMAND ----------
 
@@ -219,8 +219,8 @@ sql_statement = '''
     towerId,
     datetime as ds,
     sum(totalRecords_CDR) as y
-  FROM CDR_hour_gold_ml 
-  WHERE datetime >= '2021-06-27' and datetime < '2021-07-18'
+  FROM cdr_stream_hour_gold 
+  WHERE datetime >= '2023-05-01' and datetime < '2023-05-15'
   GROUP BY towerId, ds
   ORDER BY towerId, ds
 '''
@@ -238,7 +238,7 @@ results = (
     )
 
 #write results to table with a training_date column
-results.write.format("delta").mode("append").saveAsTable("CDR_hour_forecast")
+results.write.format("delta").mode("append").saveAsTable("cdr_hour_forecast")
 
 display(results)
 
@@ -256,8 +256,8 @@ display(results)
 
 #now for anomoly detection
 #1) here we have a regular job every hour to calculate CDR metrics so that the last hour can be put through the anomoly detection function
-currentTimeWindow = '2021-07-18T00:00:00.000+0000'
-df_current = spark.sql("SELECT * FROM CDR_hour_gold_ml WHERE datetime = '{}'".format(currentTimeWindow))
+currentTimeWindow = '2023-05-15T00:00:00.000+0000'
+df_current = spark.sql("SELECT * FROM cdr_stream_hour_gold WHERE datetime = '{}'".format(currentTimeWindow))
 
 def anomolyDetectUDF_Func(actual, forecast_min, forecast_max):
   if actual < forecast_min or actual > forecast_max:
@@ -277,17 +277,17 @@ anomolyDetectUDF = F.udf(anomolyDetectUDF_Func)
 anomolyImportanceUDF = F.udf(anomolyImportanceUDF_Func)
 
 def isAnomoly(df_current):
-  mostRecentTraining = spark.sql("SELECT training_date FROM CDR_hour_forecast GROUP BY training_date ORDER BY training_date DESC LIMIT 1")
+  mostRecentTraining = spark.sql("SELECT training_date FROM cdr_hour_forecast GROUP BY training_date ORDER BY training_date DESC LIMIT 1")
   currentTrainingDatetime = mostRecentTraining.collect()[0]['training_date']
   currentTimeWindow = df_current.select(F.first("datetime")).collect()[0]["first(datetime)"]
   
-  df_forecast = spark.sql("SELECT * FROM CDR_hour_forecast WHERE training_date = '{}' AND ds = '{}'".format(currentTrainingDatetime, currentTimeWindow))
+  df_forecast = spark.sql("SELECT * FROM cdr_hour_forecast WHERE training_date = '{}' AND ds = '{}'".format(currentTrainingDatetime, currentTimeWindow))
   
   #anomoly logic
   df_current_plus_forecast = df_current.join(df_forecast, ["towerId"])
   df_current_plus_forecast_with_anomoly = df_current_plus_forecast \
-                                                     .withColumn("anomoly", anomolyDetectUDF(F.col("totalRecords_CDR"), F.col("yhat_lower"), F.col("yhat_upper"))) \
-                                                     .withColumn("anomoly_importance", anomolyImportanceUDF(F.col("totalRecords_CDR"), F.col("yhat_lower"), F.col("yhat_upper")))
+                                                     .withColumn("anomoly", anomolyDetectUDF(F.col("totalRecords_CDR"), F.col("cdr_hour_forecast.yhat_lower"), F.col("cdr_hour_forecast.yhat_upper"))) \
+                                                     .withColumn("anomoly_importance", anomolyImportanceUDF(F.col("totalRecords_CDR"), F.col("cdr_hour_forecast.yhat_lower"), F.col("cdr_hour_forecast.yhat_upper")))
   
   return df_current_plus_forecast_with_anomoly
   

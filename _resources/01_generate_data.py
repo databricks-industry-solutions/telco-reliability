@@ -11,7 +11,7 @@ reset_all = dbutils.widgets.get("reset_all_data") == "true"
 
 # COMMAND ----------
 
-# MAGIC %run ./00-setup $reset_all_data=$reset_all_data $db_prefix=telco
+# MAGIC %run ./00-setup
 
 # COMMAND ----------
 
@@ -118,17 +118,17 @@ if reset_all and path_exists(PCMD_dir):
 if reset_all or (not cdr_path_exist):
   #generate data
   partitions_requested = 20
-  data_rows = 10000000
+  data_rows = 100000000
 
-  df_spec_cdr = (dg.DataGenerator(spark, name="signalStrengthRecords", partitions=partitions_requested, rows=data_rows, verbose=True)
+  df_spec_cdr = (dg.DataGenerator(spark, name="CDR_data", partitions=partitions_requested, rows=data_rows, verbose=True)
                               .withIdOutput()
                               .withColumn("towerId", StringType(), values=globalIds, random=True)
                               .withColumn("subscriberId", IntegerType(), minValue=1, maxValue=1000000, random=True)
                               .withColumn("otherId", IntegerType(), minValue=1, maxValue=1000000, random=True)
                               .withColumn("type", StringType(), values=["call", "text"], random=True, weights=[2,8])
-                              .withColumn("status_hidden", StringType(), values=["answered", "missed", "dropped"], random=True, weights=[8,3,1])
+                              .withColumn("status_hidden", StringType(), values=["answered", "missed", "dropped"], random=True, weights=[21,10,1])
                               .withColumn("duration_hidden", IntegerType(), minValue=1, maxValue=110, random=True, distribution=dist.Gamma(1, 1))
-                              .withColumn("event_ts", "timestamp", begin="2022-01-01 00:00:00", end="2022-12-31 00:00:00", interval=timedelta(seconds=1))
+                              .withColumn("event_ts", "timestamp", begin="2022-01-01 00:00:00", end="2022-12-31 00:00:00", interval=timedelta(seconds=43))
                               )
 
   df_TestData_cdr = df_spec_cdr.build()
@@ -151,24 +151,18 @@ if reset_all or (not cdr_path_exist):
 
 # COMMAND ----------
 
-display(CDR_dir)
-
-# COMMAND ----------
-
 #filter towers for cities for ML piece
-cities = ["Denver", "Boulder"]
-df_towers_den_boul = df_towers.filter(df_towers.properties.LocCity.isin(cities)).limit(6)
-
-globalIds_filtered = [row[0] for row in df_towers_den_boul.select(df_towers_den_boul.properties["GlobalID"]).collect()]
+globalIds_filtered = ['{B8F4712B-F69B-40B2-BB38-0D6974424723}', 
+            '{FA3B325C-25E1-42A5-8409-150E46FF3DF1}', 
+            '{8C6DB461-40EB-4811-9151-C4118189BB0E}', 
+            '{C128458D-A8A7-4C3B-A22A-6685F4DABA17}',
+            '{8C3D0E39-4470-4E0B-97FB-EA351DC4FD71}',
+            '{2630449E-8710-4134-B1C6-327EAE1978AB}']
 
 # COMMAND ----------
 
 #CDR ML Data Generation Prep
 from datetime import date, timedelta
-  
-#generate data
-partitions_requested = 36
-data_rows = 10000000
 
 #hour distributions
 hours = [x for x in range(0, 24)]
@@ -183,7 +177,7 @@ def daterange(date1, date2):
     for n in range(int ((date2 - date1).days)+1):
         yield date1 + timedelta(n)
 
-for dt in daterange(date(2022, 1, 1), date(2022, 12, 31)):
+for dt in daterange(date(2023, 1, 1), date(2023, 5, 31)):
   if dt.weekday() in [0, 1, 2, 3, 4]:
     weekdays.append(dt.strftime("%Y-%m-%d"))
   else:
@@ -191,6 +185,18 @@ for dt in daterange(date(2022, 1, 1), date(2022, 12, 31)):
     
 
 all_days = weekends + weekdays
+
+# COMMAND ----------
+
+print(weekdays)
+
+# COMMAND ----------
+
+print(weekends)
+
+# COMMAND ----------
+
+print(weekends)
 
 # COMMAND ----------
 
@@ -203,7 +209,7 @@ import dbldatagen.distributions as dist
 if reset_all or (not cdr_path_exist):
   #generate data
   partitions_requested = 20
-  data_rows = round(2920000/7)
+  data_rows = round(292000000/7)
 
   #generate baseline data
   df_spec_cdr = (dg.DataGenerator(spark, name="weekend_CDR", rows=data_rows, partitions=partitions_requested)
@@ -223,6 +229,7 @@ if reset_all or (not cdr_path_exist):
                               )
 
   #extra stransformations to add phone numbers from IDs
+  df_TestData_cdr = df_spec_cdr.build()
 
   df_TestData_renamedId = df_TestData_cdr.withColumn("rId", F.col("Id")).drop("Id")
 
@@ -235,7 +242,7 @@ if reset_all or (not cdr_path_exist):
       .withColumn("duration", F.when(F.col("type") == "text", None).otherwise(F.col("duration_hidden")))           \
       .drop("duration_hidden")
 
-  df_withText.write.mode("append").json(CDR_dir)
+  df_withText.write.mode("overwrite").json(CDR_dir+"/testdir/")
 
 # COMMAND ----------
 
@@ -247,10 +254,10 @@ import dbldatagen.distributions as dist
 if reset_all or (not cdr_path_exist):
   #generate data
   partitions_requested = 20
-  data_rows = round(2920000/2)
+  data_rows = round(292000000/7)
 
 
-  df_spec_cdr = (dg.DataGenerator(spark, name="weekday_CDR", rows=data_rows, partitions=partitions_requested)
+  df_spec_cdr2 = (dg.DataGenerator(spark, name="weekday_CDR", rows=data_rows, partitions=partitions_requested)
                               .withIdOutput()
                               .withColumn("towerId", StringType(), values=globalIds_filtered, random=True, weights=[10, 9, 3, 12, 3, 11])
                               .withColumn("subscriberId", IntegerType(), minValue=1, maxValue=1000000, random=True)
@@ -266,11 +273,11 @@ if reset_all or (not cdr_path_exist):
                               .withColumn("event_ts", TimestampType(), expr="to_timestamp(concat(date_hidden, ' ', fulltime_hidden))", baseColumn=["date_hidden", "fulltime_hidden"])
                               )
 
-  df_TestData_cdr = df_spec_cdr.build()
+  df_TestData_cdr2 = df_spec_cdr2.build()
 
   #extra stransformations to add phone numbers from IDs
 
-  df_TestData_renamedId = df_TestData_cdr.withColumn("rId", F.col("Id")).drop("Id")
+  df_TestData_renamedId = df_TestData_cdr2.withColumn("rId", F.col("Id")).drop("Id")
 
   df_phoneJoinedData = df_TestData_renamedId \
         .join(phone_numbers_df.select(F.col("phone_number").alias("subscriber_phone"), F.col("id").alias("id_sub")), F.col("subscriberId") == F.col("id_sub")) \

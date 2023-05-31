@@ -1,8 +1,4 @@
 # Databricks notebook source
-dbutils.widgets.dropdown("reset_all_data", "false", ["true", "false"], "Reset all data")
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ## Telecommunications Reliability Metrics
 # MAGIC
@@ -31,15 +27,6 @@ dbutils.widgets.dropdown("reset_all_data", "false", ["true", "false"], "Reset al
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select count(*) from json.`/Users/tomasz.bacewicz@databricks.com/field_demos/telco/CDR`
-
-# COMMAND ----------
-
-# MAGIC %run ./_resources/00-setup $reset_all_data=$reset_all_data
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ## Data Ingestion with Delta Live Tables
 # MAGIC
@@ -55,7 +42,8 @@ dbutils.widgets.dropdown("reset_all_data", "false", ["true", "false"], "Reset al
 # MAGIC
 # MAGIC * Ingestion here starts with loading CDR and PCMD data directly from S3 using Autoloader. Though in this example JSON files are loaded into S3 from where Autoloader will then ingest these files into the bronze layer, streams from Kafka, Kinesis, etc. are supported by simply changing the "format" option on the read operation.
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Bronze_v3.png?token=GHSAT0AAAAAABRG5BOEJYYCPT4PZ36K2QY2YYE6N4A" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Bronze_v3.png?
+# MAGIC " width="1000"/>
 
 # COMMAND ----------
 
@@ -68,12 +56,7 @@ def cdr_stream_bronze():
                           .option('header', 'false')  
                           .option("mergeSchema", "true")         
                           .option("cloudFiles.inferColumnTypes", "true") 
-                          .load("/Users/tomasz.bacewicz@databricks.com/field_demos/telco/CDR"))
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC SELECT * FROM CDR_hist_bronze
+                          .load("s3a://db-gtm-industry-solutions/data/CME/telco/CDR"))
 
 # COMMAND ----------
 
@@ -84,12 +67,7 @@ def pcmd_stream_bronze():
                           .option('header', 'false')  
                           .option("mergeSchema", "true")         
                           .option("cloudFiles.inferColumnTypes", "true") 
-                          .load("/Users/tomasz.bacewicz@databricks.com/field_demos/telco/PCMD"))
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC SELECT * FROM PCMD_hist_bronze
+                          .load("s3a://db-gtm-industry-solutions/data/CME/telco/PCMD"))
 
 # COMMAND ----------
 
@@ -106,7 +84,7 @@ def pcmd_stream_bronze():
 
 @dlt.view
 def static_tower_data():
-  df_towers = spark.sql("select * from {0}.{1}".format("field_demos_telco", "cell_tower_geojson"))
+  df_towers = spark.read.json("s3a://db-gtm-industry-solutions/data/CME/telco/cell_towers.json.gz")
   
   return df_towers.select(
                   df_towers.properties.GlobalID.alias("GlobalID"), 
@@ -115,11 +93,6 @@ def static_tower_data():
                   df_towers.geometry.coordinates[0].alias("Longitude"), 
                   df_towers.geometry.coordinates[1].alias("Latitude")
                  )
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC SELECT * FROM field_demos_telco.cell_tower_geojson
 
 # COMMAND ----------
 
@@ -138,11 +111,6 @@ def cdr_stream_silver():
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC SELECT * FROM CDR_hist_silver
-
-# COMMAND ----------
-
 @dlt.table(comment="PCMD Stream - Silver (Tower Info Added)")
 @dlt.expect_or_drop("towerId", "towerId IS NOT NULL")
 @dlt.expect_or_drop("typeC", "ProcedureId IS NOT NULL")
@@ -153,11 +121,6 @@ def pcmd_stream_silver():
   
   df_pcmd_bronze = dlt.read_stream("pcmd_stream_bronze")
   return df_pcmd_bronze.join(df_towers, df_pcmd_bronze.towerId == df_towers.GlobalID)
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC SELECT * FROM PCMD_hist_silver
 
 # COMMAND ----------
 
@@ -218,11 +181,6 @@ def cdr_stream_minute_gold():
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC SELECT * FROM CDR_hist_gold
-
-# COMMAND ----------
-
 import pyspark.sql.functions as F
 
 @dlt.table(comment="Aggregate PCMD Stream - Gold (by Minute)")
@@ -275,6 +233,14 @@ def pcmd_stream_minute_gold():
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Aggregating on Larger Time Windows Through Scheduled Batch Workflows
+# MAGIC As a last step in this data pipeline, hourly and daily aggregations of tower KPIs will be created as seen in the steps below. This process has been included in this Delta Live Tables pipeline for illustrative purposes but would typically be run on a batch hourly or daily basis in a real world scenario.
+# MAGIC
+# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Gold_Hour_Day_v2.png" width="1000"/>
+
+# COMMAND ----------
+
 import pyspark.sql.functions as F
 
 @dlt.table(comment="Aggregate CDR Stream - Gold (by Hour)")
@@ -294,7 +260,7 @@ def cdr_stream_hour_gold():
                           F.first("State").alias("State"),
                           F.first("Latitude").alias("Latitude"),
                           F.first("Longitude").alias("Longitude"),                            
-                          F.first("window.start").alias("window_start")))
+                          F.first("window.start").alias("datetime")))
 
   return df_windowed_by_hour
 
@@ -320,20 +286,9 @@ def cdr_stream_day_gold():
                           F.first("State").alias("State"),
                           F.first("Latitude").alias("Latitude"),
                           F.first("Longitude").alias("Longitude"),                            
-                          F.first("window.start").alias("window_start")))
+                          F.first("window.start").alias("datetime")))
 
   return df_windowed_by_day
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC SELECT * FROM PCMD_hist_gold
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Aggregating on Larger Time Windows Through Scheduled Batch Workflows
-# MAGIC Though not shown in this notebook, the aggregations created on the minute level can now be aggregated to an hourly or daily basis. Higher level aggregations such as hourly make it easier for data scientists to train machine learning models with meaningful data. Daily aggregations can be valueable to analysts who need to observe the historical trends of network performance.
 
 # COMMAND ----------
 
