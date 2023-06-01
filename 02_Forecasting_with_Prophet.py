@@ -5,7 +5,7 @@
 # MAGIC
 # MAGIC To be more specific, call detail records which have been aggregated into a gold table on a daily basis will be used to predict each tower's future activity. A benefit for a telecommunications company in doing this would be to find and plan for where outages can be expected or where those outages might affect the most customers. Ultimately, having accurate predictions for the future by tower can increase quality of service for customers and consequently reduce churn. 
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_ML_Forecasting_v3.png" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/telco_pipeline_ml.png" width="1000"/>
 # MAGIC
 # MAGIC With the power of concurrent processing, we can easily scale our exploritory analysis and forecasting to data being generated from all the towers through horizontal scaling. 
 # MAGIC
@@ -81,10 +81,10 @@ for index, row in towerIds.toPandas().iterrows():
 # MAGIC We can plot the results of a forecasting model using all of 2021 data for a tower. With Prophet we can easily find the drivers that affect the prediction the most. For example with the first tower we can find that most of the activity seems to happen on the weekend (Saturday and Sunday) while the second tower that is plotted has more activity on the weekday (Monday-Friday).
 # MAGIC
 # MAGIC ### Weekend Tower
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/weekend_component.png"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/weekend_component.png"/>
 # MAGIC
 # MAGIC ### Weekday Tower
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/weekday_component.png"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/weekday_component.png"/>
 
 # COMMAND ----------
 
@@ -147,7 +147,7 @@ for index, row in towerIds.toPandas().iterrows():
 # MAGIC When we forecast by hour, we can see the characteristics by day of a week in each tower where some towers have more activity on weekends while others are more heavily utilized on weekdays. However, with the granularity being at the hour level we can also predict what time of the day there will be more users connecting to the tower. We find that most activity starts occuring after 10am and starts decreasing after 9pm. 
 # MAGIC
 # MAGIC ### Hourly Components
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/hour_of_day_component.png"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/hour_of_day_component.png"/>
 
 # COMMAND ----------
 
@@ -250,7 +250,7 @@ display(results)
 # MAGIC
 # MAGIC As an example, we can see on our previous forecasts where the actual lies outside of the prediction confidence interval.
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/anomoly_graph.png"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/anomoly_graph.png"/>
 
 # COMMAND ----------
 

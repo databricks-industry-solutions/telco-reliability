@@ -8,7 +8,7 @@
 # MAGIC
 # MAGIC
 # MAGIC The modern telecommunications network consists of the Base Station also known as the **eNodeB (Evolved Node B)** is the hardware that communicates directly with the **UE (User Enitity such as a Mobile Phone)**. The **MME (Mobility Management Entity)** manages the entire process from a cell phone making a connection to a network to a paging message being sent to the mobile phone.  
-# MAGIC <img style="margin: auto" src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_simple.png" width="1200"/>
+# MAGIC <img style="margin: auto" src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/Telco_simple.png" width="1200"/>
 # MAGIC
 # MAGIC **Use Case Overview**
 # MAGIC * Telecommunications services collect many different forms of data to observe overall network reliability as well as to predict how best to expand the network to reach more customers. Some typical types of data collected are:
@@ -23,7 +23,7 @@
 # MAGIC
 # MAGIC **Full Architecture from Ingestion to Analytics and Machine Learning**
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Full_v3.png" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/telco_pipeline_full.png" width="1000"/>
 
 # COMMAND ----------
 
@@ -42,7 +42,7 @@
 # MAGIC
 # MAGIC * Ingestion here starts with loading CDR and PCMD data directly from S3 using Autoloader. Though in this example JSON files are loaded into S3 from where Autoloader will then ingest these files into the bronze layer, streams from Kafka, Kinesis, etc. are supported by simply changing the "format" option on the read operation.
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Bronze_v3.png?
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/telco_pipeline_bronze.png
 # MAGIC " width="1000"/>
 
 # COMMAND ----------
@@ -78,7 +78,7 @@ def pcmd_stream_bronze():
 # MAGIC
 # MAGIC * In the silver layer, the data is refined removing nulls and duplicates while also joining tower information such as state, longitude, and latitude to allow for geospatial analysis. Stream-static joins are performed to do this with the streaming CDR and PCMD records being joined with static tower information which has been stored previously.
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Silver_v3.png" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/telco_pipeline_silver.png" width="1000"/>
 
 # COMMAND ----------
 
@@ -113,7 +113,7 @@ def cdr_stream_silver():
 
 @dlt.table(comment="PCMD Stream - Silver (Tower Info Added)")
 @dlt.expect_or_drop("towerId", "towerId IS NOT NULL")
-@dlt.expect_or_drop("typeC", "ProcedureId IS NOT NULL")
+@dlt.expect_or_drop("ProcedureId", "ProcedureId IS NOT NULL")
 @dlt.expect("ProcedureDuration", "ProcedureDuration > 0")
 def pcmd_stream_silver():
   #get static tower data
@@ -128,7 +128,7 @@ def pcmd_stream_silver():
 # MAGIC ## Aggregating on Various Time Periods to Create the Gold Layer
 # MAGIC With Spark **Structured Streaming** the streaming records can be automatically aggregated with stateful processing. Here the aggregation is done on 1 minute intervals and the KPIs are aggregated accordingly. Any interval can be selected here and larger time window aggregations can be done on a scheduled basis with Databricks **Workflows**. For example, the records that are aggregated here at 1 minute intervals can then be aggregated to hour long intervals with a workflow that runs every hour. 
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Gold_v3.png" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/telco_pipeline_gold.png" width="1000"/>
 
 # COMMAND ----------
 
@@ -237,7 +237,7 @@ def pcmd_stream_minute_gold():
 # MAGIC ## Aggregating on Larger Time Windows Through Scheduled Batch Workflows
 # MAGIC As a last step in this data pipeline, hourly and daily aggregations of tower KPIs will be created as seen in the steps below. This process has been included in this Delta Live Tables pipeline for illustrative purposes but would typically be run on a batch hourly or daily basis in a real world scenario.
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v1/master/Images/Telco_Gold_Hour_Day_v2.png" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/telco_pipeline_batch.png" width="1000"/>
 
 # COMMAND ----------
 
@@ -299,4 +299,4 @@ def cdr_stream_day_gold():
 # MAGIC <br>
 # MAGIC <br>
 # MAGIC
-# MAGIC <img src="https://raw.githubusercontent.com/tomaszb-db/telco_v0/master/Images/Telcodashboard.png" width="1000"/>
+# MAGIC <img src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/Telcodashboard.png" width="1000"/>
