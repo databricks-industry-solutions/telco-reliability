@@ -48,7 +48,8 @@ pipeline_json = {
           "libraries": [
               {
                   "notebook": {
-                      "path": f"01_Data Ingestion and Pipeline"
+                      "path": f"01_Data Ingestion and Pipeline",
+                      "full_refresh": True
                   }
               }
           ],
