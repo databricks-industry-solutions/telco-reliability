@@ -100,13 +100,12 @@ import pyspark.sql.functions as F
 
 @dlt.table(comment="CDR Stream - Silver (Tower Info Added)")
 @dlt.expect_or_drop("towerId", "towerId IS NOT NULL")
-@dlt.expect_or_drop("typeC", "typeC IS NOT NULL")
+@dlt.expect_or_drop("type", "type IS NOT NULL")
 def cdr_stream_silver():
   #get static tower data
   df_towers = dlt.read("static_tower_data")
   
   df_cdr_bronze = dlt.read_stream("cdr_stream_bronze")
-  df_cdr_bronze_col_rename = df_cdr_bronze.withColumn("typeC", F.col("type")).drop("type")
   return df_cdr_bronze_col_rename.join(df_towers, df_cdr_bronze_col_rename.towerId == df_towers.GlobalID)
 
 # COMMAND ----------
@@ -145,8 +144,8 @@ def cdr_stream_minute_gold():
                                                  .agg(F.count(F.when(F.col("status") == "dropped", True)).alias("dropped"),   
                                                     F.count(F.when(F.col("status") == "answered", True)).alias("answered"),     
                                                     F.count(F.when(F.col("status") == "missed", True)).alias("missed"),         
-                                                    F.count(F.when(F.col("typeC") == "text", True)).alias("text"),              
-                                                    F.count(F.when(F.col("typeC") == "call", True)).alias("call"),              
+                                                    F.count(F.when(F.col("type") == "text", True)).alias("text"),              
+                                                    F.count(F.when(F.col("type") == "call", True)).alias("call"),              
                                                     F.count(F.lit(1)).alias("totalRecords_CDR"),                               
                                                     F.first("window.start").alias("window_start"),                              
                                                     F.first("Longitude").alias("Longitude"),                                    
