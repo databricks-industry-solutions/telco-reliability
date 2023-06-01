@@ -106,7 +106,7 @@ def cdr_stream_silver():
   df_towers = dlt.read("static_tower_data")
   
   df_cdr_bronze = dlt.read_stream("cdr_stream_bronze")
-  return df_cdr_bronze_col_rename.join(df_towers, df_cdr_bronze_col_rename.towerId == df_towers.GlobalID)
+  return df_cdr_bronze.join(df_towers, df_cdr_bronze.towerId == df_towers.GlobalID)
 
 # COMMAND ----------
 
