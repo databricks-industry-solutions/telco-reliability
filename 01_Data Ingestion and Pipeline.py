@@ -294,7 +294,7 @@ def cdr_stream_day_gold():
 
 # MAGIC %md 
 # MAGIC ## Using Databricks SQL for Analytics and Reliability Monitoring
-# MAGIC Once the gold tables of different time aggregations are in place, analysis can be done in the Databricks SQL persona view. <a href="https://e2-demo-field-eng.cloud.databricks.com/sql/dashboards/b9a70988-9ed2-4fc0-b4f0-02a485b8e364-telco-cdr-overview?o=1444828305810485">Here</a> is a sample dashboard which shows the overall health of the network starting with the total number of calls and dropped calls, a geospatial view to analyze the problem areas, and lastly a table to see the find the details of every tower. 
+# MAGIC Once the gold tables of different time aggregations are in place, analysis can be done in the Databricks SQL persona view. We provide a sample dashboard which shows the overall health of the network starting with the total number of calls and dropped calls, a geospatial view to analyze the problem areas, and lastly a table to see the find the details of every tower. 
 # MAGIC
 # MAGIC <br>
 # MAGIC <br>

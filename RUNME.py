@@ -24,44 +24,11 @@
 # COMMAND ----------
 
 # DBTITLE 0,Install util packages
-# MAGIC %pip install git+https://github.com/databricks-academy/dbacademy@v1.0.13 git+https://github.com/databricks-industry-solutions/notebook-solution-companion@sdk-dev databricks-sdk --quiet --disable-pip-version-check
+# MAGIC %pip install git+https://github.com/databricks-academy/dbacademy@v1.0.13 git+https://github.com/databricks-industry-solutions/notebook-solution-companion@safe-print-html --quiet --disable-pip-version-check
 
 # COMMAND ----------
 
 from solacc.companion import NotebookSolutionCompanion
-
-# COMMAND ----------
-
-NotebookSolutionCompanion()
-
-# COMMAND ----------
-
-# {
-#     "clusters": [
-#         {
-#             "label": "default",
-#             "autoscale": {
-#                 "min_workers": 1,
-#                 "max_workers": 5,
-#                 "mode": "LEGACY"
-#             }
-#         }
-#     ],
-#     "development": true,
-#     "continuous": false,
-#     "channel": "CURRENT",
-#     "photon": true,
-#     "libraries": [
-#         {
-#             "notebook": {
-#                 "path": "/Repos/tomasz.bacewicz@databricks.com/telco_v1/src/01_Data Ingestion and Pipeline"
-#             }
-#         }
-#     ],
-#     "name": "SOLACC-Telco Reliability",
-#     "edition": "ADVANCED",
-#     "storage": f"/databricks_solacc/telco_reliability/dlt"
-# }
 
 # COMMAND ----------
 

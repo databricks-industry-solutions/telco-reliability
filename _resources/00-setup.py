@@ -4,7 +4,7 @@ cloud_storage_path = "s3a://db-gtm-industry-solutions/data/CME/telco"
 # COMMAND ----------
 
 #table location definitions
-db_name = "solacc_telco_reliability"
+db_name = "SOLACC_telco_reliability"
 
 #locations of data streams
 CDR_dir = cloud_storage_path + "/CDR"
