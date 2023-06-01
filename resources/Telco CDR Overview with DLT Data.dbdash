@@ -1,0 +1,1325 @@
+{
+  "queries": [
+    {
+      "id": "c8cda370-f19f-4f7f-97b1-fc4f466884d4",
+      "name": "(Clone) Details by Tower (1)",
+      "description": null,
+      "query": "select\n  sum(call) as Total_Calls,\n  sum(dropped) as Total_Dropped,\n  coalesce(try_divide(sum(dropped), sum(call)), 0) * 100 as Drop_Rate,\n  towerId,\n  first(City),\n  first(County),\n  first(State)\nfrom\n  SOLACC_telco_reliability.cdr_stream_day_gold\nwhere date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"\ngroup by towerId",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": false,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279988",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "2ca4da78-0ef4-48a3-9f51-7855fc47c251",
+          "type": "TABLE",
+          "name": "Table 1",
+          "description": "",
+          "options": {
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "high_drop_rate",
+                "type": "boolean",
+                "displayAs": "boolean",
+                "visible": true,
+                "order": 100003,
+                "title": "high_drop_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "towerId",
+                "type": "string",
+                "displayAs": "string",
+                "visible": true,
+                "order": 100004,
+                "title": "towerId",
+                "allowSearch": false,
+                "alignContent": "left",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "long",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100005,
+                "title": "long",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "lat",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100006,
+                "title": "lat",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": true,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "groups": {},
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": null,
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            }
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "74eb5d31-cbd0-4850-8c42-eede7c75aa49",
+      "name": "(Clone) Sum Dropped (1)",
+      "description": null,
+      "query": "select\n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate\nfrom\n  SOLACC_telco_reliability.cdr_stream_day_gold\nwhere date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": true,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279984",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "847c48c3-f8eb-4686-a3eb-6afb4f3708c1",
+          "type": "COUNTER",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "counterLabel": "Total Dropped Calls",
+            "counterColName": "sum(dropped)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "bcedc46b-dfb4-4ea4-ba54-05cd03aa65cc",
+      "name": "(Clone) Dropped Rate (1)",
+      "description": null,
+      "query": "select\n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate\nfrom\n  SOLACC_telco_reliability.cdr_stream_day_gold\nwhere date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": true,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279983",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "a6a80db4-82db-4c0f-b14b-f727d03ef467",
+          "type": "COUNTER",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "counterLabel": "Dropped Rate",
+            "counterColName": "dropped_rate",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 3,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true,
+            "stringSuffix": "%"
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "98f6c90b-dd07-4532-82ea-9d2aaf7eb181",
+      "name": "(Clone) map_drop_rates (1)",
+      "description": null,
+      "query": "\n    select\n      sum(call),\n      sum(dropped),\n      coalesce(try_divide(sum(dropped), sum(call)), 0) * 100 as dropped_rate,\n      case\n        when coalesce(try_divide(sum(dropped),sum(call)), 0) * 100 > 15 then TRUE\n        else FALSE\n      end as high_drop_rate,\n      towerId,\n      first(Longitude) as Longitude,\n      first(Latitude) as Latitude\n    from\n      SOLACC_telco_reliability.cdr_stream_day_gold\n    where date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"\n    group by\n      towerId\n",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": false,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279982",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "e664aebc-9d36-4578-a0fc-1624d9790df7",
+          "type": "MAP",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "latColName": "Latitude",
+            "lonColName": "Longitude",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 41.14142317933322,
+                "lng": -110.67033727189076
+              },
+              "_northEast": {
+                "lat": 43.96908877243241,
+                "lng": -104.66630895157826
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true,
+            "condensed": true,
+            "withRowNumber": true
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "c95b06e8-ce8b-4a7a-9ff2-18ad6a100dfa",
+      "name": "(Clone) Sum Calls (1)",
+      "description": null,
+      "query": "select\n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate\nfrom\n  SOLACC_telco_reliability.cdr_stream_day_gold\nwhere date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": true,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279985",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "90caad35-efdf-417e-9b5a-4dc5120d8e0a",
+          "type": "COUNTER",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "counterLabel": "Total Calls",
+            "counterColName": "sum(call)",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "itemsPerPage": 25,
+            "condensed": false,
+            "columns": [
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(call)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100000,
+                "title": "sum(call)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "sum(dropped)",
+                "type": "integer",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100001,
+                "title": "sum(dropped)",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              },
+              {
+                "numberFormat": "0.00",
+                "booleanValues": [
+                  "false",
+                  "true"
+                ],
+                "imageUrlTemplate": "{{ @ }}",
+                "imageTitleTemplate": "{{ @ }}",
+                "imageWidth": "",
+                "imageHeight": "",
+                "linkUrlTemplate": "{{ @ }}",
+                "linkTextTemplate": "{{ @ }}",
+                "linkTitleTemplate": "{{ @ }}",
+                "linkOpenInNewTab": true,
+                "name": "dropped_rate",
+                "type": "float",
+                "displayAs": "number",
+                "visible": true,
+                "order": 100002,
+                "title": "dropped_rate",
+                "allowSearch": false,
+                "alignContent": "right",
+                "allowHTML": false,
+                "highlightLinks": false,
+                "useMonospaceFont": false,
+                "preserveWhitespace": false
+              }
+            ],
+            "latColName": "lat",
+            "lonColName": "long",
+            "classify": "high_drop_rate",
+            "groups": {
+              "true": {
+                "color": "#E92828"
+              },
+              "false": {
+                "color": "#17BF51"
+              }
+            },
+            "mapTileUrl": "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "clusterMarkers": true,
+            "customizeMarkers": false,
+            "iconShape": "marker",
+            "iconFont": "circle",
+            "foregroundColor": "#ffffff",
+            "backgroundColor": "#356AFF",
+            "borderColor": "#356AFF",
+            "bounds": {
+              "_southWest": {
+                "lat": 33.61394024788109,
+                "lng": -117.83196304246701
+              },
+              "_northEast": {
+                "lat": 42.26044569736338,
+                "lng": -93.81584976121701
+              }
+            },
+            "tooltip": {
+              "enabled": false,
+              "template": ""
+            },
+            "popup": {
+              "enabled": true,
+              "template": ""
+            },
+            "version": 2,
+            "showPlotlyControls": true
+          },
+          "query_plan": null
+        }
+      ]
+    },
+    {
+      "id": "005a4255-d5bc-41d1-aa01-ee4453ed9dd9",
+      "name": "(Clone) Calls by Day (This Year) (1)",
+      "description": null,
+      "query": "select   \n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate,\n  date(datetime) as date\n  from\n  SOLACC_telco_reliability.cdr_stream_day_gold\n  where date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"\n  group by date\n  order by date asc",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": true,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279987",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "07aeeada-f6ea-48f4-bf35-f27c6d40e6a2",
+          "type": "CHART",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "version": 2,
+            "globalSeriesType": "line",
+            "sortX": true,
+            "sortY": true,
+            "legend": {
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              }
+            },
+            "yAxis": [
+              {
+                "type": "-"
+              },
+              {
+                "type": "-",
+                "opposite": true
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {
+              "column_c0fd9e349175": {
+                "yAxis": 0,
+                "type": "line",
+                "name": "Total Calls",
+                "zIndex": 0
+              },
+              "column_c0fd9e349274": {
+                "yAxis": 0,
+                "type": "line",
+                "zIndex": 1,
+                "name": "Total Dropped"
+              },
+              "column_c0fd9e349276": {
+                "yAxis": 1,
+                "type": "line",
+                "zIndex": 2,
+                "name": "Dropped Rate"
+              }
+            },
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "useAggregationsUi": true,
+            "swappedAxes": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "showDataLabels": false,
+            "columnConfigurationMap": {
+              "x": {
+                "column": "date",
+                "transform": "DAY_LEVEL",
+                "id": "column_8628fad23223"
+              },
+              "y": [
+                {
+                  "id": "column_c0fd9e349175",
+                  "column": "sum(call)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349274",
+                  "column": "sum(dropped)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349276",
+                  "column": "dropped_rate",
+                  "transform": "SUM"
+                }
+              ]
+            },
+            "isAggregationOn": true,
+            "hideYAxes": false
+          },
+          "query_plan": {
+            "selects": [
+              {
+                "function": "DATE_TRUNC",
+                "args": [
+                  {
+                    "column": "date"
+                  },
+                  {
+                    "string": "DAY"
+                  }
+                ],
+                "alias": "column_8628fad23223"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(call)"
+                  }
+                ],
+                "alias": "column_c0fd9e349175"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(dropped)"
+                  }
+                ],
+                "alias": "column_c0fd9e349274"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "dropped_rate"
+                  }
+                ],
+                "alias": "column_c0fd9e349276"
+              }
+            ],
+            "groups": [
+              {
+                "column": "column_8628fad23223"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "de8fcb76-97aa-4495-9673-443d39584e13",
+      "name": "(Clone) Calls by Month (1)",
+      "description": null,
+      "query": "select   \n  sum(call),\n  sum(dropped),\n  (sum(dropped) / sum(call) * 100) as dropped_rate,\n  month(datetime) as month\nfrom\n  SOLACC_telco_reliability.cdr_stream_day_gold\nwhere date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"\ngroup by month\norder by month asc",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": true,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279986",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "ff690192-bfe5-4026-8c7c-781a5180acc8",
+          "type": "CHART",
+          "name": "Table",
+          "description": "",
+          "options": {
+            "version": 2,
+            "globalSeriesType": "line",
+            "sortX": true,
+            "sortY": true,
+            "legend": {
+              "traceorder": "normal"
+            },
+            "xAxis": {
+              "type": "-",
+              "labels": {
+                "enabled": true
+              }
+            },
+            "yAxis": [
+              {
+                "type": "-"
+              },
+              {
+                "type": "-",
+                "opposite": true
+              }
+            ],
+            "alignYAxesAtZero": false,
+            "error_y": {
+              "type": "data",
+              "visible": true
+            },
+            "series": {
+              "stacking": null,
+              "error_y": {
+                "type": "data",
+                "visible": true
+              }
+            },
+            "seriesOptions": {
+              "column_c0fd9e349175": {
+                "yAxis": 0,
+                "type": "line",
+                "name": "Total Calls",
+                "zIndex": 0
+              },
+              "column_c0fd9e349274": {
+                "yAxis": 0,
+                "type": "line",
+                "zIndex": 1,
+                "name": "Total Dropped"
+              },
+              "column_c0fd9e349276": {
+                "yAxis": 1,
+                "type": "line",
+                "zIndex": 2,
+                "name": "Dropped Rate"
+              }
+            },
+            "valuesOptions": {},
+            "direction": {
+              "type": "counterclockwise"
+            },
+            "sizemode": "diameter",
+            "coefficient": 1,
+            "numberFormat": "0,0[.]00000",
+            "percentFormat": "0[.]00%",
+            "textFormat": "",
+            "missingValuesAsZero": true,
+            "useAggregationsUi": true,
+            "swappedAxes": false,
+            "dateTimeFormat": "YYYY-MM-DD HH:mm",
+            "showDataLabels": false,
+            "columnConfigurationMap": {
+              "x": {
+                "column": "month",
+                "id": "column_329e685712009"
+              },
+              "y": [
+                {
+                  "id": "column_c0fd9e349175",
+                  "column": "sum(call)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349274",
+                  "column": "sum(dropped)",
+                  "transform": "SUM"
+                },
+                {
+                  "id": "column_c0fd9e349276",
+                  "column": "dropped_rate",
+                  "transform": "SUM"
+                }
+              ]
+            },
+            "isAggregationOn": true,
+            "hideYAxes": false,
+            "condensed": true,
+            "withRowNumber": true
+          },
+          "query_plan": {
+            "selects": [
+              {
+                "column": "month"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(call)"
+                  }
+                ],
+                "alias": "column_c0fd9e349175"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "sum(dropped)"
+                  }
+                ],
+                "alias": "column_c0fd9e349274"
+              },
+              {
+                "function": "SUM",
+                "args": [
+                  {
+                    "column": "dropped_rate"
+                  }
+                ],
+                "alias": "column_c0fd9e349276"
+              }
+            ],
+            "groups": [
+              {
+                "column": "month"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "db88db1c-e243-4a57-866e-d75e23f4879b",
+      "name": "(Clone) subscribers_affected (2)",
+      "description": null,
+      "query": "select\n  sum(unique_subscribers) as subscribers_affected\nfrom\n  (\n    select\n      sum(call),\n      sum(dropped),\n      coalesce(try_divide(sum(dropped), sum(call)), 0) * 100 as dropped_rate,\n      case\n        when (coalesce(try_divide(sum(dropped), sum(call)), 0) * 100) > 10 then TRUE\n        else FALSE\n      end as high_drop_rate,\n      towerId\n    from\n      SOLACC_telco_reliability.cdr_stream_day_gold\n    where date(datetime) > \"2022-01-01\" and date(datetime) <= \"2022-12-21\"\n    group by\n      towerId\n  ) as table_dropped_calls\n  join (\n    select\n      count(subscriberId) + count(id_other) as unique_subscribers,\n      towerId\n    from\n      geospatial_tomasz.telco_cdr_hist\n    group by\n      towerId\n  ) as table_subscribers on table_dropped_calls.towerId = table_subscribers.towerId \nwhere\n  table_dropped_calls.high_drop_rate = TRUE",
+      "options": {
+        "parent": "folders/339991404637611",
+        "apply_auto_limit": false,
+        "folder_node_status": "ACTIVE",
+        "folder_node_internal_name": "tree/2793793368279989",
+        "visualization_control_order": [],
+        "parameters": []
+      },
+      "visualizations": [
+        {
+          "id": "08e4ee0b-be14-482d-956c-6da9bc95c73a",
+          "type": "COUNTER",
+          "name": "Counter 1",
+          "description": "",
+          "options": {
+            "counterLabel": "Subscribers affected by outages",
+            "counterColName": "subscribers_affected",
+            "rowNumber": 1,
+            "targetRowNumber": 1,
+            "stringDecimal": 0,
+            "stringDecChar": ".",
+            "stringThouSep": ",",
+            "tooltipFormat": "0,0.000",
+            "condensed": true,
+            "withRowNumber": true
+          },
+          "query_plan": null
+        }
+      ]
+    }
+  ],
+  "dashboard": {
+    "id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+    "name": "Telco CDR Overview (with DLT Data)",
+    "widgets": [
+      {
+        "id": "4b38b40d-3dbd-44d6-8098-26e272fb493a",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 6,
+            "sizeY": 13,
+            "minSizeX": 2,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 13
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "e664aebc-9d36-4578-a0fc-1624d9790df7"
+      },
+      {
+        "id": "56691888-6571-412b-8bea-76dca9f79c6e",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 5,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 4,
+            "row": 0
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "a6a80db4-82db-4c0f-b14b-f727d03ef467"
+      },
+      {
+        "id": "63100465-91e2-44a8-a940-05f87f960ec2",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 3,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 5
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "ff690192-bfe5-4026-8c7c-781a5180acc8"
+      },
+      {
+        "id": "7478c521-42ad-48e6-afbf-ab9005ab38cd",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 5,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 2,
+            "row": 0
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "847c48c3-f8eb-4686-a3eb-6afb4f3708c1"
+      },
+      {
+        "id": "79c14229-d935-475c-a5ea-8d4ba9b34e34",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 6,
+            "sizeY": 12,
+            "minSizeX": 2,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 30
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "2ca4da78-0ef4-48a3-9f51-7855fc47c251"
+      },
+      {
+        "id": "b4a63f95-4f4a-49bc-b42b-5c29b2fe653c",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 2,
+            "sizeY": 5,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 0
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "90caad35-efdf-417e-9b5a-4dc5120d8e0a"
+      },
+      {
+        "id": "d1f01eb6-3160-42a8-b47f-804083178872",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 6,
+            "sizeY": 4,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 1,
+            "maxSizeY": 1000,
+            "col": 0,
+            "row": 26
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "08e4ee0b-be14-482d-956c-6da9bc95c73a"
+      },
+      {
+        "id": "e81f864e-3065-40a2-80a9-9be2bb7ee48a",
+        "width": 1,
+        "options": {
+          "parameterMappings": {},
+          "isHidden": false,
+          "position": {
+            "autoHeight": false,
+            "sizeX": 3,
+            "sizeY": 8,
+            "minSizeX": 1,
+            "maxSizeX": 6,
+            "minSizeY": 5,
+            "maxSizeY": 1000,
+            "col": 3,
+            "row": 5
+          }
+        },
+        "dashboard_id": "919b9a8b-e4ad-418e-95cf-0ba189fa2d56",
+        "text": "",
+        "visualization_id": "07aeeada-f6ea-48f4-bf35-f27c6d40e6a2"
+      }
+    ],
+    "tags": [],
+    "color_palette": null,
+    "dashboard_filters_enabled": false,
+    "parent": "folders/339991404637611",
+    "is_archived": false
+  },
+  "version": "1.0"
+}

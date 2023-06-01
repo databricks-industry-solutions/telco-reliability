@@ -122,4 +122,8 @@ dbutils.widgets.dropdown("run_job", "False", ["True", "False"])
 run_job = dbutils.widgets.get("run_job") == "True"
 nsc = NotebookSolutionCompanion()
 nsc.deploy_compute(job_json, run_job=run_job)
-_ = nsc.deploy_dbsql("./resources/Telco CDR Overview.dbdash", dbsql_config_table, spark)
+_ = nsc.deploy_dbsql("./resources/Telco CDR Overview with DLT Data.dbdash", dbsql_config_table, spark)
+
+# COMMAND ----------
+
+
