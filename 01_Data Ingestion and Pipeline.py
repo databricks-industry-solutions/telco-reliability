@@ -244,7 +244,7 @@ import pyspark.sql.functions as F
 
 @dlt.table(comment="Aggregate CDR Stream - Gold (by Hour)")
 def cdr_stream_hour_gold():
-  df_cdr_minute_gold = dlt.read_stream("cdr_stream_minute_gold")
+  df_cdr_minute_gold = dlt.read("cdr_stream_minute_gold")
 
   df_windowed_by_hour = (df_cdr_minute_gold
                           .groupBy(F.window("date", "1 hour"), "towerId")
@@ -270,7 +270,7 @@ import pyspark.sql.functions as F
 
 @dlt.table(comment="Aggregate CDR Stream - Gold (by Day)")
 def cdr_stream_day_gold():
-  df_cdr_minute_gold = dlt.read_stream("cdr_stream_minute_gold")
+  df_cdr_minute_gold = dlt.read("cdr_stream_minute_gold")
 
   df_windowed_by_day = (df_cdr_minute_gold
                           .groupBy(F.window("date", "1 day"), "towerId")
