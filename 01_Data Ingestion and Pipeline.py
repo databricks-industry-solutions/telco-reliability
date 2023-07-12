@@ -7,7 +7,7 @@
 # MAGIC
 # MAGIC
 # MAGIC
-# MAGIC The modern telecommunications network consists of the Base Station also known as the **eNodeB (Evolved Node B)** is the hardware that communicates directly with the **UE (User Enitity such as a Mobile Phone)**. The **MME (Mobility Management Entity)** manages the entire process from a cell phone making a connection to a network to a paging message being sent to the mobile phone.  
+# MAGIC The modern telecommunications network consists of the Base Station also known as the **eNodeB (Evolved Node B) for 4G networks** is the hardware that communicates directly with the **UE (User Enitity such as a Mobile Phone)**. The **MME (Mobility Management Entity)** manages the entire process from a cell phone making a connection to a network to a paging message being sent to the mobile phone.  
 # MAGIC <img style="margin: auto" src="https://raw.githubusercontent.com/databricks-industry-solutions/telco-reliability/main/images/Telco_simple.png" width="1200"/>
 # MAGIC
 # MAGIC **Use Case Overview**
@@ -106,6 +106,7 @@ def cdr_stream_silver():
   df_towers = dlt.read("static_tower_data")
   
   df_cdr_bronze = dlt.read_stream("cdr_stream_bronze")
+  #join CDR data with tower data
   return df_cdr_bronze.join(df_towers, df_cdr_bronze.towerId == df_towers.GlobalID)
 
 # COMMAND ----------
@@ -119,6 +120,7 @@ def pcmd_stream_silver():
   df_towers = dlt.read("static_tower_data")
   
   df_pcmd_bronze = dlt.read_stream("pcmd_stream_bronze")
+  #join PCMD data with
   return df_pcmd_bronze.join(df_towers, df_pcmd_bronze.towerId == df_towers.GlobalID)
 
 # COMMAND ----------
@@ -138,7 +140,6 @@ def cdr_stream_minute_gold():
   df_cdr_silver = dlt.read_stream("cdr_stream_silver")
   
   
-  #add widget to choose time window
   df_cdr_pivot_on_status_grouped_tower = (df_cdr_silver 
                                                  .groupBy(F.window("event_ts", "1 minute"), "towerId")                       
                                                  .agg(F.count(F.when(F.col("status") == "dropped", True)).alias("dropped"),   
@@ -186,7 +187,6 @@ import pyspark.sql.functions as F
 def pcmd_stream_minute_gold():
   df_pcmd_silver = dlt.read_stream("pcmd_stream_silver")
   
-  #clean up the code
   df_pcmd_pivot_on_status_grouped_tower = (df_pcmd_silver 
                                                   .groupBy(F.window("event_ts", "1 minute"), "towerId")                                                                     
                                                   .agg(F.avg(F.when(F.col("ProcedureId") == "11", F.col("ProcedureDuration"))).alias("avg_dur_request_to_release_bearer"),  
