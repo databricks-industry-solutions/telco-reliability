@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md This notebook is available at https://github.com/databricks-industry-solutions/telco-reliability. For more information about this solution accelerator, visit https://www.databricks.com/solutions/accelerators/telco-network-analytics.
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## Network Demand Planning - Using Forecasting To Predict Tower Load
 # MAGIC In the previous data engineering focused notebook, Per Call Measurement Data and Call Detail Records were ingested, transformed and cleansed, and ultimately aggregated at different time intervals. In this notebook, machine learning will be leveraged to generate forecasts using the gold tables generated from the pervious steps. 
