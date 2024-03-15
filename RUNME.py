@@ -33,6 +33,39 @@ from solacc.companion import NotebookSolutionCompanion
 
 # COMMAND ----------
 
+pipeline_json_sql = {
+         "clusters": [
+              {
+                  "label": "default",
+                  "autoscale": {
+                      "min_workers": 1,
+                      "max_workers": 3
+                  }
+              }
+          ],
+          "development": True,
+          "continuous": False,
+          "edition": "advanced",
+          "libraries": [
+              {
+                  "notebook": {
+                      "path": f"01_Data Ingestion and Pipeline (SQL Version)",
+                      "full_refresh": True
+                  }
+              }
+          ],
+          "name": "SOLACC-Telco Reliability-SQL",
+          "storage": f"/databricks_solacc/telco_reliability/dlt_sql",
+          "target": f"SOLACC_telco_reliability_sql",
+          "allow_duplicate_names": "true"
+      }
+
+# COMMAND ----------
+
+pipeline_id_sql = NotebookSolutionCompanion().deploy_pipeline(pipeline_json_sql, "", spark)
+
+# COMMAND ----------
+
 pipeline_json = {
           "clusters": [
               {
@@ -74,6 +107,12 @@ job_json = {
             "group": "CME"
         },
         "tasks": [
+            {
+                "pipeline_task": {
+                    "pipeline_id": pipeline_id_sql
+                },
+                "task_key": "telco_reliability_01_sql"
+            },
             {
                 "pipeline_task": {
                     "pipeline_id": pipeline_id
